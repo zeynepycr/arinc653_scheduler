@@ -1,0 +1,25 @@
+# Build artifacts
+build/
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Executables
+scheduler
+scheduler.exe

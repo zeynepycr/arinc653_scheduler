@@ -15,3 +15,8 @@ add_executable(scheduler
 )
 
 target_compile_options(scheduler PRIVATE -Wall -Wextra -Wpedantic)
+
+# Windows: link winmm for high-resolution timer (timeBeginPeriod)
+if(WIN32)
+    target_link_libraries(scheduler winmm)
+endif()

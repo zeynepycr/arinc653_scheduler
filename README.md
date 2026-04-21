@@ -38,30 +38,6 @@ arinc653_scheduler/
 
 ---
 
-## Build & Run
-
-### Option A — Makefile (quickest)
-
-```bash
-make
-./scheduler
-```
-
-Clean build:
-
-```bash
-make clean && make
-```
-
-### Option B — CMake
-
-```bash
-mkdir build && cd build
-cmake ..
-cmake --build .
-./scheduler
-```
-
 ### Requirements
 
 - C++17-compatible compiler: GCC 7+, Clang 5+, or MSVC 2017+

@@ -2,11 +2,16 @@
 #include <iostream>
 #include <stdexcept>
 #include <chrono>
+#include <thread>
 #include <iomanip>
 #include <ctime>
 
 using Clock = std::chrono::steady_clock;
 using Ms    = std::chrono::duration<double, std::milli>;
+
+const int CYCLE_TIME_MS = 100;  // Target cycle time in milliseconds
+
+//using namespace std;
 
 Scheduler::Scheduler(int cycles)
     : totalCycles(cycles)
@@ -24,6 +29,8 @@ void Scheduler::run() {
     std::cout << "========================================\n";
 
     for (int cycle = 1; cycle <= totalCycles; ++cycle) {
+        auto cycleStart = Clock::now();
+
         // Wall-clock timestamp for cycle header
         auto now = std::chrono::system_clock::now();
         std::time_t t = std::chrono::system_clock::to_time_t(now);
@@ -32,7 +39,7 @@ void Scheduler::run() {
 
         std::cout << "\n[Cycle " << cycle << " | " << timebuf << "]\n";
 
-        auto cycleStart = Clock::now();
+        auto execStart = Clock::now();
 
         // Execute each partition in fixed order (deterministic)
         for (auto& partition : partitions) {
@@ -50,9 +57,22 @@ void Scheduler::run() {
                       << partMs << " ms\n";
         }
 
-        double cycleMs = Ms(Clock::now() - cycleStart).count();
+        double execMs = Ms(Clock::now() - execStart).count();
+        std::cout << "  -- Execution time: " << std::fixed << std::setprecision(1)
+                  << execMs << " ms --\n";
+
+        // Enforce strict 100 ms cycle time
+        double elapsedMs = Ms(Clock::now() - cycleStart).count();
+        double remainingMs = CYCLE_TIME_MS - elapsedMs;
+        
+        if (remainingMs > 1.0) {
+            std::this_thread::sleep_for(Ms(remainingMs - 1.0));  // Leave 1 ms buffer
+        }
+
+        // Report actual wall-clock cycle time (should be ~100 ms)
+        double actualCycleMs = Ms(Clock::now() - cycleStart).count();
         std::cout << "  -- Total cycle time: " << std::fixed << std::setprecision(1)
-                  << cycleMs << " ms --\n";
+                  << actualCycleMs << " ms (100 ms enforced) --\n";
     }
 
     std::cout << "\n========================================\n";

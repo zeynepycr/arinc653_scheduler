@@ -9,8 +9,8 @@ Display::Display(int failCycle)
 {}
 
 void Display::execute(int cycle) {
-    // Simulate 40 ms time window (ARINC 653 time partition)
-    std::this_thread::sleep_for(std::chrono::milliseconds(40));
+    // Simulate ~28 ms time window (reduced for output overhead)
+    std::this_thread::sleep_for(std::chrono::milliseconds(28));
 
     // Controlled fault injection for fault-isolation demonstration
     if (cycle == failOnCycle) {

@@ -9,8 +9,8 @@ FlightControl::FlightControl()
 {}
 
 void FlightControl::execute(int /*cycle*/) {
-    // Simulate 60 ms time window (ARINC 653 time partition)
-    std::this_thread::sleep_for(std::chrono::milliseconds(60));
+    // Simulate ~42 ms time window (reduced for output overhead)
+    std::this_thread::sleep_for(std::chrono::milliseconds(42));
 
     // Safety-critical computation (simplified simulation)
     altitude += 1.5;

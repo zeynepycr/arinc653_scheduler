@@ -1,0 +1,52 @@
+name: Build and Run ARINC 653 Scheduler
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-run:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+    
+    - name: Install dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake
+    
+    - name: Install dependencies (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        choco install cmake -y
+    
+    - name: Create build directory
+      run: mkdir -p build
+    
+    - name: Configure with CMake
+      run: cmake -B build -S .
+    
+    - name: Build project
+      run: cmake --build build --config Release
+    
+    - name: Run ARINC 653 Scheduler
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          ./build/Release/scheduler.exe
+        else
+          ./build/scheduler
+        fi
+      shell: bash
